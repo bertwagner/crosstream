@@ -42,3 +42,11 @@ file2 = os.path.join(path,'small_data_2.csv')
 h = HashJoin()
 h.inner_join(file1,True,[0,1],file2,True,[0,1])
 
+import pyodbc
+cnxn = pyodbc.connect("Driver=SQLite3;Database=tests/example.db")
+cursor = cnxn.cursor()
+cursor.execute("SELECT Col1,Col2 FROM SmallTestData")
+row = cursor.fetchone() 
+while row: 
+    print(row[1])
+    row = cursor.fetchone()
