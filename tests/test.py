@@ -17,6 +17,10 @@ from streaming_data_joiner.hash_join import HashJoin
 # stream csv
 # stream pyodbc
 
+# allow different method signatures
+# create datareader class to standardize input stream regardless of file or pyodbc, handle headers
+
+
 # join csv to csv
 # join csv to pyodbc
 # join pyodbc to pydobc
@@ -32,6 +36,8 @@ from streaming_data_joiner.hash_join import HashJoin
 # might have to spill hash buckets/results to disk
 # output to pandas dataframe? output to csv?
 
+#case insensitive joins
+#override equality method (to allow for match codes)
 
 
 path = Path(__file__).resolve().parents[0]
@@ -42,11 +48,17 @@ file2 = os.path.join(path,'small_data_2.csv')
 h = HashJoin()
 h.inner_join(file1,True,[0,1],file2,True,[0,1])
 
-import pyodbc
-cnxn = pyodbc.connect("Driver=SQLite3;Database=tests/example.db")
-cursor = cnxn.cursor()
-cursor.execute("SELECT Col1,Col2 FROM SmallTestData")
-row = cursor.fetchone() 
-while row: 
-    print(row[1])
-    row = cursor.fetchone()
+
+
+connection_string2 = f'Driver=SQLite3;Database={path}/example.db'
+query2 = 'SELECT Col1,Col2 FROM OneMTestData'
+
+# import pyodbc
+# cnxn = pyodbc.connect(connection_string2)
+# cursor = cnxn.cursor()
+# for i in range(100000):
+#     cursor.execute("INSERT INTO OneMTestData (Col1) VALUES ('a')")
+#     cnxn.commit()
+
+
+h.inner_join_csv_pyodbc(file1,True,[0,1],connection_string2,query2,[0,1])
