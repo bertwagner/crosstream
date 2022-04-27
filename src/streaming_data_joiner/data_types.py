@@ -45,7 +45,7 @@ class CSVData():
                 next(reader)
 
             for row in reader:
-                yield row
+                yield tuple(row)
     
 class QueryData():
     @overload

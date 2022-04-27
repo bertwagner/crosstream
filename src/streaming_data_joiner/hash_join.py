@@ -1,6 +1,9 @@
 from collections import defaultdict
 import csv
+from typing import overload, Union
 import pyodbc
+
+import streaming_data_joiner.data_types as dt
 
 class HashJoin:
     def __init__(self):
@@ -19,64 +22,18 @@ class HashJoin:
 
         return join_key
 
-    def inner_join(self, file_1, contains_headers_1, join_indexes_1, file_2, contains_headers_2, join_indexes_2):
+    data_type = Union[dt.CSVData,dt.QueryData]
+    def inner_join(self, input_1: data_type, input_2: data_type):
+        """Join two datasets.
+
+        The smaller dataset should be passed into input_1.
+        """
         self.hash_buckets = defaultdict(list)
-        # load first file into hash buckets
-        # ideally the first file is the smaller dataset
-        with open(file_1) as f:
-            reader = csv.reader(f)
-            if contains_headers_1:
-                all_join_indexes_numeric = all([isinstance(item,int) for item in join_indexes_1])
-                if all_join_indexes_numeric:
-                    next(reader)
-                else:
-                    #TODO: Find numeric indices for column names
-                    pass
 
-            for row in reader:
-                self.__build_hash_input(row,join_indexes_1)
-       
-        with open(file_2) as f:
-            reader = csv.reader(f)
-            if contains_headers_2:
-                all_join_indexes_numeric = all([isinstance(item,int) for item in join_indexes_2])
-                if all_join_indexes_numeric:
-                    next(reader)
-                else:
-                    #TODO: Find numeric indices for column names
-                    pass
+        for row in input_1.nextrow():
+            self.__build_hash_input(row,input_1.join_column_indexes)
 
-            for row in reader:
-                join_key = self.__build_join_key(row,join_indexes_2)
-                for bucket_row in self.hash_buckets[join_key]:
-                    print(bucket_row,row)
-
-    def inner_join_csv_pyodbc(self, file_1, contains_headers_1,join_indexes_1,connection_string_2,query_2,join_indexes_2):
-        self.hash_buckets = defaultdict(list)
-        # load first file into hash buckets
-        # ideally the first file is the smaller dataset
-        with open(file_1) as f:
-            reader = csv.reader(f)
-            if contains_headers_1:
-                all_join_indexes_numeric = all([isinstance(item,int) for item in join_indexes_1])
-                if all_join_indexes_numeric:
-                    next(reader)
-                else:
-                    #TODO: Find numeric indices for column names
-                    pass
-
-            for row in reader:
-                self.__build_hash_input(row,join_indexes_1)
-        
-        
-        all_join_indexes_numeric = all([isinstance(item,int) for item in join_indexes_2])
-        
-        cnxn = pyodbc.connect(connection_string_2)
-        cursor = cnxn.cursor()
-        cursor.execute(query_2)
-        row = cursor.fetchone() 
-        while row: 
-            join_key = self.__build_join_key(row,join_indexes_2)
+        for row in input_2.nextrow():
+            join_key = self.__build_join_key(row,input_2.join_column_indexes)
             for bucket_row in self.hash_buckets[join_key]:
-                    print(bucket_row,row)
-            row = cursor.fetchone()
+                print(bucket_row,row)
