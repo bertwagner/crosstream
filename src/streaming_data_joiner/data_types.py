@@ -4,20 +4,24 @@ import pyodbc
 
 class CSVData():
     @overload
-    def __init__(self, csv_file_path: str, join_columns: List[str]):
+    def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[str]):
         ...
     
     @overload
-    def __init__(self, csv_file_path: str, join_columns: List[int]):
+    def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[int]):
         ...
 
-    def __init__(self, csv_file_path, join_columns):
+    def __init__(self, csv_file_path, has_headers, join_columns):
         self.csv_file_path = csv_file_path
+        self.has_headers=has_headers
 
         if isinstance(join_columns, list) and all(isinstance(x, int) for x in join_columns):
             self.join_column_indexes = join_columns
 
         elif isinstance(join_columns, list) and all(isinstance(x, str) for x in join_columns):
+            if has_headers==False:
+                raise ValueError('has_headers=False, but column names passed to join_columns')
+
             # determine column indexes from names
             with open(csv_file_path) as f:
                 reader = csv.reader(f)
@@ -31,6 +35,17 @@ class CSVData():
             self.join_column_indexes = join_column_indexes
         else:
             raise ValueError('join_columns must be of type List[int] or List[str]')
+    
+    def nextrow(self):
+        with open(self.csv_file_path) as f:
+            reader = csv.reader(f)
+
+            # skip reading in the header row
+            if self.has_headers:
+                next(reader)
+
+            for row in reader:
+                yield row
     
 class QueryData():
     @overload
@@ -63,3 +78,13 @@ class QueryData():
             self.join_column_indexes = join_column_indexes
         else:
             raise ValueError('Must be of type List[int] or List[str]')
+    
+    def nextrow(self):
+        connection = pyodbc.connect(self.connection_string)
+        with connection:
+            cursor = connection.cursor()
+            cursor.execute(self.query)
+            row = cursor.fetchone() 
+            while row: 
+                yield row
+                row = cursor.fetchone()
