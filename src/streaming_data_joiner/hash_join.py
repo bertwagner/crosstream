@@ -1,6 +1,6 @@
 from collections import defaultdict
 import csv
-from typing import overload, Union
+from typing import overload, Union, Callable, List
 import pyodbc
 
 import streaming_data_joiner.data_types as dt
@@ -22,12 +22,21 @@ class HashJoin:
 
         return join_key
 
+    def __process_matched_hashes(self,bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
+        print(bucket_row,probe_row)
+
     data_type = Union[dt.CSVData,dt.QueryData]
-    def inner_join(self, input_1: data_type, input_2: data_type):
+    def inner_join(self, input_1: data_type, input_2: data_type, override_build_join_key=None, override_process_matched_hashes=None):
         """Join two datasets.
 
         The smaller dataset should be passed into input_1.
         """
+
+        if override_build_join_key != None:
+            self.__build_join_key = override_build_join_key
+        if override_process_matched_hashes != None:
+            self.__process_matched_hashes = override_process_matched_hashes
+
         self.hash_buckets = defaultdict(list)
 
         for row in input_1.nextrow():
@@ -36,4 +45,5 @@ class HashJoin:
         for row in input_2.nextrow():
             join_key = self.__build_join_key(row,input_2.join_column_indexes)
             for bucket_row in self.hash_buckets[join_key]:
-                print(bucket_row,row)
+                self.__process_matched_hashes(bucket_row,row, input_1.join_column_indexes, input_2.join_column_indexes)
+                

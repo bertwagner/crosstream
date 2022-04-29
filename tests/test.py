@@ -29,7 +29,8 @@ from streaming_data_joiner.hash_join import HashJoin
 # might have to spill hash buckets/results to disk
 # output to pandas dataframe? output to csv?
 
-
+# Add predicate pushdown
+# write actual tests, move this code to README examples
 
 
 path = Path(__file__).resolve().parents[0]
@@ -73,3 +74,23 @@ pass
 h=HashJoin()
 h.inner_join(c1,c2)
 h.inner_join(c1,q2)
+
+def custom_join_key(row,indices):
+    # calculate the hash of join values
+    join_values = []
+    for col_index in indices:
+        join_values.append(str(row[col_index]))
+    join_key = 'AAA'.join(join_values)
+
+    return join_key
+
+h=HashJoin()
+h.inner_join(c1,c2,custom_join_key)
+h.inner_join(c1,q2,custom_join_key)
+
+def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
+        print("WOO!", bucket_row,probe_row)
+
+h=HashJoin()
+h.inner_join(c1,c2,custom_join_key,custom_process_matched_hashes)
+h.inner_join(c1,q2,custom_join_key,custom_process_matched_hashes)
