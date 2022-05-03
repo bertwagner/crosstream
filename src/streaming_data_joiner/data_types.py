@@ -15,12 +15,18 @@ class CSVData():
         self.csv_file_path = csv_file_path
         self.has_headers=has_headers
 
+        if self.has_headers:
+             with open(csv_file_path) as f:
+                reader = csv.reader(f)
+                headers = next(reader)
+                self.column_names = headers
+
         if isinstance(join_columns, list) and all(isinstance(x, int) for x in join_columns):
             self.join_column_indexes = join_columns
 
         elif isinstance(join_columns, list) and all(isinstance(x, str) for x in join_columns):
             if has_headers==False:
-                raise ValueError('has_headers=False, but column names passed to join_columns')
+                raise ValueError('has_headers=False, but strings passed to join_columns')
 
             # determine column indexes from names
             with open(csv_file_path) as f:
@@ -59,6 +65,12 @@ class QueryData():
     def __init__(self, connection_string, query, join_columns):
         self.connection_string = connection_string
         self.query = query
+
+        cnxn = pyodbc.connect(self.connection_string)
+        cursor = cnxn.cursor()
+        cursor.execute(query)
+        headers = [column[0] for column in cursor.description]
+        self.column_names = headers
 
         if isinstance(join_columns, list) and all(isinstance(x, int) for x in join_columns):
             self.join_column_indexes = join_columns
