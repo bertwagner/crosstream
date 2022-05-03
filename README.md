@@ -4,6 +4,13 @@ A cross server data joiner, written to handle large data sizes without running o
 
 ```
 import csv
+import os
+import pathlib as Path
+
+path = Path(__file__).resolve().parents[0]
+
+file1 = os.path.join(path,'small_data_1.csv')
+file2 = os.path.join(path,'small_data_2.csv')
 
 c1=CSVData(file1,True,[0,1])
 c2=CSVData(file2, True, ['col1','col2'])
