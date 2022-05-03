@@ -2,15 +2,6 @@
 
 A cross server data joiner, written to handle large data sizes without running out of memory.
 
-1. Install
-
-```
-git clone https://github.com/bertwagner/python_streaming_data_joiner.git
-cd python_streaming_data_joiner
-pip install .
-```
-2. Match two csv files and write results to a csv
-
 ```
 import csv
 
