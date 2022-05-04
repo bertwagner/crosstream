@@ -3,7 +3,7 @@ import csv
 from typing import overload, Union, Callable, List
 import pyodbc
 
-import streaming_data_joiner.data_types as dt
+import data_joiner.data_types as dt
 
 class HashJoin:
     def __init__(self):
