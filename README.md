@@ -1,8 +1,13 @@
-# Python Streaming Data Joiner
+# Qross
 
-A cross server data joiner, written to handle large data sizes without running out of memory.
+A package for joining datasets across servers while using minimal memory. `Qross` is able to join:
+ - CSV to CSV
+ - CSV to ODBC 
+ - ODBC to ODBC
 
-1. Install:
+ `Qross` is optimized to use minimal memory by streaming the data. This allows even the most low-performance machines to handle large dataset joins that would otherwise not be able to fit in the machine's memory.
+
+## Installation
 
 ```
 git clone https://github.com/bertwagner/python_streaming_data_joiner.git
@@ -10,31 +15,39 @@ cd python_streaming_data_joiner
 pip install .
 ```
 
-2. Run:
+## Basics
+
+Ideally you want to make your smaller dataset the first dataset in your join.
+
 
 ```
 from data_joiner.hash_join import HashJoin
 from data_joiner.data_types import CSVData,QueryData
-import csv, os
-from pathlib import Path
+import csv
 
-path = Path(__file__).resolve().parents[0]
+file1 = 'small_dataset.csv'
+file2 = 'large_dataset.csv'
 
-file1 = os.path.join(path,'small_data_1.csv')
-file2 = os.path.join(path,'small_data_2.csv')
-
+# join using column indexes or column names
 c1=CSVData(file1,True,[0,1])
 c2=CSVData(file2, True, ['col1','col2'])
 
+# initialize the type of join to perform. 
 h=HashJoin()
 
-with open('joined_data.csv', 'w') as f:
+with open('joined_output.csv', 'w') as f:
     w =csv.writer(f)
     
     # write header column names
     w.writerow(c1.column_names + c2.column_names)
 
     for row_left,row_right in h.inner_join(c1,c2):
-        # write matched results
+        # write matched results to our joined_output.csv
         w.writerow(row_left + row_right)
 ```
+
+ ## Loop versus Hash Joins
+
+ 
+
+ ## Custom methods for determining equality
