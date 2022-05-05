@@ -3,7 +3,7 @@ import csv
 from typing import overload, Union, Callable, List
 import pyodbc
 
-import data_joiner.data_types as dt
+from data_joiner.data_types import CSVData,QueryData
 
 class HashJoin:
     def __init__(self):
@@ -25,7 +25,7 @@ class HashJoin:
     def __process_matched_hashes(self,bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
         return bucket_row,probe_row
 
-    data_type = Union[dt.CSVData,dt.QueryData]
+    data_type = Union[CSVData,QueryData]
     def inner_join(self, input_1: data_type, input_2: data_type, override_build_join_key=None, override_process_matched_hashes=None):
         """Join two datasets.
 
@@ -46,5 +46,6 @@ class HashJoin:
             join_key = self.__build_join_key(row,input_2.join_column_indexes)
             for bucket_row in self.hash_buckets[join_key]:
                 record = self.__process_matched_hashes(bucket_row,row, input_1.join_column_indexes, input_2.join_column_indexes)
-                yield record[0],record[1]
+                if record != None:
+                    yield record 
                 

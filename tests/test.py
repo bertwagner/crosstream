@@ -99,3 +99,6 @@ def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_index
 h=HashJoin()
 h.inner_join(c1,c2,custom_join_key,custom_process_matched_hashes)
 h.inner_join(c1,q2,custom_join_key,custom_process_matched_hashes)
+
+
+## allow returning more than two records in the custom override function
