@@ -1,11 +1,11 @@
-# Qross
+# qross
 
-A package for joining datasets across servers while using minimal memory. `Qross` is able to join:
+A package for streaming dataset joins across servers while using minimal memory. `qross` is able to join:
  - CSV to CSV
  - CSV to ODBC 
  - ODBC to ODBC
 
- `Qross` is optimized to use minimal memory by streaming the data. This allows even the most low-performance machines to handle large dataset joins that would otherwise not be able to fit in the machine's memory.
+ `qross` is optimized to use minimal memory by streaming the data. This allows even the most low-performance machines to handle large dataset joins that would otherwise not be able to fit in the machine's memory.
 
 ## Installation
 

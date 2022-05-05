@@ -12,8 +12,17 @@ class TestHashJoin:
         assert self.value == 2
 
 
-from data_joiner.hash_join import HashJoin
-from data_joiner.data_types import CSVData,QueryData
+# csv to csv
+# csv to odbc
+# odbc to odbc
+# hash join
+# loop join
+# custom override functions
+# output more values in override functions
+
+
+from qross.hash_join import HashJoin
+from qross.data_types import CSVData,QueryData
 import csv, os
 from pathlib import Path
 

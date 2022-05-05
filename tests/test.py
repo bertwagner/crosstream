@@ -8,7 +8,7 @@ SOURCE_PATH = os.path.join(
     PROJECT_PATH,"src"
 )
 sys.path.append(SOURCE_PATH)
-from data_joiner.hash_join import HashJoin
+from qross.hash_join import HashJoin
 
 
 #https://bertwagner.com/posts/hash-match-join-internals/
@@ -31,7 +31,7 @@ from data_joiner.hash_join import HashJoin
 
 # Add predicate pushdown
 # write actual tests, move this code to README examples
-from data_joiner.data_types import CSVData, QueryData
+from qross.data_types import CSVData, QueryData
 
 path = Path(__file__).resolve().parents[0]
 
@@ -100,5 +100,3 @@ h=HashJoin()
 h.inner_join(c1,c2,custom_join_key,custom_process_matched_hashes)
 h.inner_join(c1,q2,custom_join_key,custom_process_matched_hashes)
 
-
-## allow returning more than two records in the custom override function
