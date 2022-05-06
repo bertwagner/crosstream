@@ -8,7 +8,7 @@ SOURCE_PATH = os.path.join(
     PROJECT_PATH,"src"
 )
 sys.path.append(SOURCE_PATH)
-from crossjoin.hash_join import HashJoin
+from streamjoin.hash_join import HashJoin
 
 
 #https://bertwagner.com/posts/hash-match-join-internals/
@@ -31,7 +31,7 @@ from crossjoin.hash_join import HashJoin
 
 # Add predicate pushdown
 # write actual tests, move this code to README examples
-from crossjoin.data_types import CSVData, QueryData
+from streamjoin.data_types import CSVData, QueryData
 
 path = Path(__file__).resolve().parents[0]
 
