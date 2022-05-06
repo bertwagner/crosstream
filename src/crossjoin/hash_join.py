@@ -3,7 +3,7 @@ import csv
 from typing import overload, Union, Callable, List
 import pyodbc
 
-from qross.data_types import CSVData,QueryData
+from crossjoin.data_types import CSVData,QueryData
 
 class HashJoin:
     def __init__(self):

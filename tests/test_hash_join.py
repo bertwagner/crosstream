@@ -21,8 +21,8 @@ class TestHashJoin:
 # output more values in override functions
 
 
-from qross.hash_join import HashJoin
-from qross.data_types import CSVData,QueryData
+from crossjoin.hash_join import HashJoin
+from crossjoin.data_types import CSVData,QueryData
 import csv, os
 from pathlib import Path
 
