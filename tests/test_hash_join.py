@@ -1,70 +1,48 @@
 import pytest
+from confluent.hash_join import HashJoin
+from confluent.data_types import CSVData,QueryData
+import os, csv
 
 
-class TestHashJoin:
+def test_csv_to_csv(tmp_path_factory,csv_input_data):
+    # columns referred to by index and name
+    c1=CSVData(csv_input_data[0],True,[0,1])
+    c2=CSVData(csv_input_data[1], True, ['col1','col2'])
 
-    def test_csv_to_csv(self):
-        #from crossjoin.hash_join import HashJoin
-        #from crossjoin.data_types import CSVData,QueryData
-        import csv, os
-        from pathlib import Path
+    h=HashJoin()
 
-        #path = Path(__file__).resolve().parents[0]
+    output_file = os.path.join(tmp_path_factory.getbasetemp(),'csv_to_csv_output.csv')
 
-        file1 = os.path.join(path,'small_data_1.csv')
-        file2 = os.path.join(path,'small_data_2.csv')
+    with open(output_file, 'w') as f:
+        w =csv.writer(f)
+        
+        # write header column names
+        w.writerow(c1.column_names + c2.column_names)
 
-        c1=CSVData(file1,True,[0,1])
-        c2=CSVData(file2, True, ['col1','col2'])
+        for row_left,row_right in h.inner_join(c1,c2):
+            # write matched results
+            w.writerow(row_left + row_right)
 
-        h=HashJoin()
+    with open(output_file, 'r') as f:
+        file_content = f.read()
+        assert file_content == '''col1,col2,col1,col2
+a,1,a,1
+a,3,a,3
+b,1,b,1
+c,3,c,3
+'''
 
-        with open('joined_data.csv', 'w') as f:
-            w =csv.writer(f)
-            
-            # write header column names
-            w.writerow(c1.column_names + c2.column_names)
+def test_csv_to_odbc(tmp_path_factory,csv_input_data,sqlite_input_data):
 
-            for row_left,row_right in h.inner_join(c1,c2):
-                # write matched results
-                w.writerow(row_left + row_right)
+    # columns referred to by index and name
+    c1=CSVData(csv_input_data[0],True,[0,1])
+    q1=QueryData(sqlite_input_data,'SELECT 1 as test',[0])
 
-        self.value = 1
-        assert self.value == 1
+    assert 1==1
 
 
-# csv to csv
-# csv to odbc
 # odbc to odbc
 # hash join
 # loop join
 # custom override functions
 # output more values in override functions
-
-
-from streamjoin.hash_join import HashJoin
-from streamjoin.data_types import CSVData,QueryData
-import csv, os
-from pathlib import Path
-
-path = Path(__file__).resolve().parents[0]
-
-file1 = os.path.join(path,'small_data_1.csv')
-file2 = os.path.join(path,'small_data_2.csv')
-
-c1=CSVData(file1,True,[0,1])
-c2=CSVData(file2, True, ['col1','col2'])
-
-h=HashJoin()
-
-with open('joined_data.csv', 'w') as f:
-    w =csv.writer(f)
-    
-    # write header column names
-    w.writerow(c1.column_names + c2.column_names)
-
-    for row_left,row_right in h.inner_join(c1,c2):
-        # write matched results
-        w.writerow(row_left + row_right)
-
-

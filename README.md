@@ -1,11 +1,11 @@
-# streamjoin
+# confluent
 
-A package for streaming dataset joins across servers while using minimal memory. `streamjoin` is able to join:
+A package for streaming cross-server dataset joins while using minimal memory. 
+
+`confluent` is able to join across the following sources with minimal memory usage:
  - CSV to CSV
  - CSV to ODBC 
  - ODBC to ODBC
-
- `streamjoin` is optimized to use minimal memory by streaming the data. This allows even the most low-performance machines to handle large dataset joins that would otherwise not be able to fit in the machine's memory.
 
 ## Installation
 
