@@ -23,7 +23,7 @@ class HashJoin:
         return join_key
 
     def __process_matched_hashes(self,bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
-        return bucket_row,probe_row
+        return tuple(bucket_row),tuple(probe_row,)
 
     data_type = Union[CSVData,QueryData]
     def inner_join(self, input_1: data_type, input_2: data_type, override_build_join_key=None, override_process_matched_hashes=None):
@@ -47,5 +47,5 @@ class HashJoin:
             for bucket_row in self.hash_buckets[join_key]:
                 record = self.__process_matched_hashes(bucket_row,row, input_1.join_column_indexes, input_2.join_column_indexes)
                 if record != None:
-                    yield record 
+                    yield record
                 

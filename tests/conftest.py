@@ -48,8 +48,23 @@ def csv_input_data(tmp_path_factory):
 @pytest.fixture(scope='session')
 def sqlite_input_data(tmp_path_factory):
     db_path = os.path.join(tmp_path_factory.getbasetemp(),'example.db')
-    con = sqlite3.connect(db_path)
-
     connection_string = f'Driver=SQLite3;Database={db_path}'
+
+    conn = sqlite3.connect(db_path)
+    curs = conn.cursor()
+    curs.execute('''
+            CREATE TABLE test_data
+            (col1 char(1), col2 int)
+            ''')
+
+    curs.execute("INSERT INTO test_data (col1,col2) VALUES ('a',1);")
+    curs.execute("INSERT INTO test_data (col1,col2) VALUES ('a',3);")
+    curs.execute("INSERT INTO test_data (col1,col2) VALUES ('b',1);")
+    curs.execute("INSERT INTO test_data (col1,col2) VALUES ('c',3);")
+    curs.execute("INSERT INTO test_data (col1,col2) VALUES ('d',1);")
+    curs.execute("INSERT INTO test_data (col1,col2) VALUES ('d',2);")
+
+    conn.commit()
+    conn.close()
 
     return connection_string
