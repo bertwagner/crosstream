@@ -21,8 +21,8 @@ Ideally you want to make your smaller dataset the first dataset in your join.
 
 
 ```
-from data_joiner.hash_join import HashJoin
-from data_joiner.data_types import CSVData,QueryData
+from confluent.hash_join import HashJoin
+from confluent.data_types import CSVData,QueryData
 import csv
 
 file1 = 'small_dataset.csv'
