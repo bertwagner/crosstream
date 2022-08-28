@@ -15,6 +15,11 @@ cd python_streaming_data_joiner
 pip install .
 ```
 
+You will also need the sqlite odbc driver if running the tests:
+```
+apt-get install libsqliteodbc unixodbc
+```
+
 ## Basics
 
 Ideally you want to make your smaller dataset the first dataset in your join.

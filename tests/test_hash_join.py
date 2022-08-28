@@ -4,6 +4,18 @@ from confluent.data_types import CSVData,QueryData
 import os, csv
 
 
+def test_csv_false_headers(csv_input_data):
+    with pytest.raises(ValueError):
+        c1=CSVData(csv_input_data[0],False,['col1','col2']) 
+    
+def test_csv_mixed_headers(csv_input_data):
+    with pytest.raises(ValueError):
+        c1=CSVData(csv_input_data[0],True,[1,'col2']) 
+
+def test_odbc_mixed_headers(sqlite_input_data):
+    with pytest.raises(ValueError):
+        q1=QueryData(sqlite_input_data,'SELECT * from test_data',[1,'col2'])
+
 def test_csv_to_csv(tmp_path_factory,csv_input_data):
     # columns referred to by index and name
     c1=CSVData(csv_input_data[0],True,[0,1])
@@ -62,7 +74,7 @@ b,1,b,1
 c,3,c,3
 '''
 
-def test_odbc_to_odbc(tmp_path_factory,csv_input_data,sqlite_input_data):
+def test_odbc_to_odbc(tmp_path_factory,sqlite_input_data):
 
     # columns referred to by index and name
     q1=QueryData(sqlite_input_data,'SELECT * from test_data',[0])

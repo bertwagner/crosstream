@@ -37,7 +37,6 @@ def csv_input_data(tmp_path_factory):
     ]
 
     output2 = os.path.join(tmp_path_factory.getbasetemp(),'test_data_2.csv')
-  
     with open(output2, 'w') as f:
         writer = csv.DictWriter(f, fieldnames = file2_headers)
         writer.writeheader()
