@@ -1,11 +1,14 @@
 # confluent
 
-A package for streaming cross-server dataset joins while using minimal memory. 
+## Description
 
-`confluent` is able to join across the following sources with minimal memory usage:
- - CSV to CSV
- - CSV to ODBC 
- - ODBC to ODBC
+This package helps join large datasets across servers efficiently. It accomplishes this by streaming the data, allowing it to:
+ - read each dataset only once
+ - not need to store the complete datasets in memory
+
+This is particularly helpful when your datasets are larger than the available memory on your machine or when you want to minimize network reads.
+
+This package supports CSV and pyodbc datasources.
 
 ## Installation
 
@@ -15,15 +18,11 @@ cd python_streaming_data_joiner
 pip install .
 ```
 
-You will also need the sqlite odbc driver if running the tests:
-```
-apt-get install libsqliteodbc unixodbc
-```
+## Usage Examples
 
-## Basics
+### Basic hash join
 
 Ideally you want to make your smaller dataset the first dataset in your join.
-
 
 ```
 from confluent.hash_join import HashJoin
@@ -40,6 +39,7 @@ c2=CSVData(file2, True, ['col1','col2'])
 # initialize the type of join to perform. 
 h=HashJoin()
 
+# specify the output file
 with open('joined_output.csv', 'w') as f:
     w =csv.writer(f)
     
@@ -50,9 +50,34 @@ with open('joined_output.csv', 'w') as f:
         # write matched results to our joined_output.csv
         w.writerow(row_left + row_right)
 ```
+### Custom method for determining equality
 
- ## Loop versus Hash Joins
+By default, this package will join only if all values are equal.
 
- 
+If you want to perform a transformation on your data before comparing for equality, or use more complicated join equality logic, you can pass in your own function into `override_build_join_key` to define how equality is determined:
 
- ## Custom methods for determining equality
+
+### Custom method for processing matched hashes
+
+By default this package returns tuples of the joined rows. If you want to customize what the output of your matched data looks like, you can pass a function to the `override_process_matched_hashes` argument:
+
+
+## Tests
+
+If you want to run the tests, you will need to ensure you have the sqlite odbc driver installed:
+
+```
+apt-get install libsqliteodbc unixodbc
+```
+
+Then execute the tests:
+
+```
+pytest
+```
+
+And check for coverage:
+
+```
+pytest --cov-config=tests/.coveragerc --cov=confluent --cov-report term-missing
+```
