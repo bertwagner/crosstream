@@ -1,4 +1,4 @@
-# confluent
+# crosstream
 
 ## Description
 
@@ -13,8 +13,8 @@ This package supports CSV and pyodbc datasources.
 ## Installation
 
 ```
-git clone https://github.com/bertwagner/python_streaming_data_joiner.git
-cd python_streaming_data_joiner
+git clone https://github.com/bertwagner/crosstream.git
+cd crosstream
 pip install .
 ```
 
@@ -25,8 +25,8 @@ pip install .
 Ideally you want to make your smaller dataset the first dataset in your join.
 
 ```
-from confluent.hash_join import HashJoin
-from confluent.data_types import CSVData,QueryData
+from crosstream.hash_join import HashJoin
+from crosstream.data_types import CSVData,QueryData
 import csv
 
 file1 = 'small_dataset.csv'
