@@ -4,19 +4,20 @@ import pyodbc
 
 class CSVData():
     @overload
-    def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[str]):
+    def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[str], encoding: str):
         ...
     
     @overload
-    def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[int]):
+    def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[int], encoding: str):
         ...
 
-    def __init__(self, csv_file_path, has_headers, join_columns):
+    def __init__(self, csv_file_path, has_headers, join_columns, encoding='utf-8'):
         self.csv_file_path = csv_file_path
         self.has_headers=has_headers
+        self.encoding=encoding
 
         if self.has_headers:
-             with open(csv_file_path) as f:
+             with open(csv_file_path, encoding=self.encoding) as f:
                 reader = csv.reader(f)
                 headers = next(reader)
                 self.column_names = headers
@@ -29,7 +30,7 @@ class CSVData():
                 raise ValueError('has_headers=False, but strings passed to join_columns')
 
             # determine column indexes from names
-            with open(csv_file_path) as f:
+            with open(csv_file_path, encoding=self.encoding) as f:
                 reader = csv.reader(f)
                 headers = next(reader)
                 join_column_indexes=[]
@@ -43,7 +44,7 @@ class CSVData():
             raise ValueError('join_columns must be of type List[int] or List[str]')
     
     def nextrow(self):
-        with open(self.csv_file_path) as f:
+        with open(self.csv_file_path, encoding=self.encoding) as f:
             reader = csv.reader(f)
 
             # skip reading in the header row
