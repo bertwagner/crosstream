@@ -1,8 +1,6 @@
-# crosstream
+# crosstream 🐍🌊🤝
 
-## Description
-
-This package helps join large datasets across servers efficiently. It accomplishes this by streaming the data, allowing it to:
+This Python package helps join large datasets across servers efficiently. It accomplishes this by streaming the data, allowing it to:
  - read each dataset only once
  - not need to store the complete datasets in memory
 
