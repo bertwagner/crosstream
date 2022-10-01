@@ -3,7 +3,6 @@ from crosstream.hash_join import HashJoin
 from crosstream.data_types import CSVData,QueryData
 import os, csv
 
-
 def test_csv_false_headers(csv_input_data):
     with pytest.raises(ValueError):
         c1=CSVData(csv_input_data[0],False,['col1','col2']) 
@@ -114,20 +113,22 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
 
     # columns referred to by index and name
     c1=CSVData(csv_input_data[0],True,[0,1])
-    q1=QueryData(sqlite_input_data,'SELECT * from test_data',['col1','col2'])
+    c2=CSVData(csv_input_data[1], True, ['col1','col2'])
 
     # define a function for joining on criteria that is modified before insert into hash table
     def custom_join_key(row,indices):
         # calculate the hash of join values
         join_values = []
         for col_index in indices:
-            join_values.append(str(row[col_index]))
-        join_key = '2020-01-01|'.join(join_values)
+            # here we transform our join key, removing any spaces from our values
+            join_values.append(str(row[col_index]).replace(' ',''))
+        join_key = ''.join(join_values)
 
         return join_key
 
-    # define a function for determining if a matched join key is truly a match, allowing additional output columns
+    # define a function for performing additional transformations or adding additional outputs before the columns are returned
     def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
+        # adding a new column indicating the weights of these matches are equal to 1
         weight=1.0
         return tuple(bucket_row),tuple(probe_row),(weight,)
 
@@ -139,9 +140,9 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
         w =csv.writer(f)
         
         # write header column names
-        w.writerow(c1.column_names + q1.column_names + ['weight'])
+        w.writerow(c1.column_names + c2.column_names + ['weight'])
 
-        for row_left,row_right,weight in h.inner_join(c1,q1,custom_join_key,custom_process_matched_hashes):
+        for row_left,row_right,weight in h.inner_join(c1,c2,override_build_join_key=custom_join_key,override_process_matched_hashes=custom_process_matched_hashes):
             # write matched results
             w.writerow(row_left + row_right + weight)
 
@@ -153,6 +154,7 @@ a,1,a,1,1.0
 a,3,a,3,1.0
 b,1,b,1,1.0
 c,3,c,3,1.0
+d e,1,de,1,1.0
 '''
 
 
