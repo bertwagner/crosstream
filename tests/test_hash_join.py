@@ -1,6 +1,6 @@
 import pytest
-from confluent.hash_join import HashJoin
-from confluent.data_types import CSVData,QueryData
+from crosstream.hash_join import HashJoin
+from crosstream.data_types import CSVData,QueryData
 import os, csv
 
 
