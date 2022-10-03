@@ -81,7 +81,7 @@ And then pass that into the `inner_join()` method:
 
 ```
 ...
-for row_left,row_right in h.inner_join(c1,q1,override_build_join_key=custom_join_key)
+for row_left,row_right in h.inner_join(c1,c2,override_build_join_key=custom_join_key)
 ...
 ```
 
@@ -100,7 +100,7 @@ def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_index
 And then pass that into the `inner_join()` method:
 
 ```
-for row_left,row_right,weight in h.inner_join(c1,q1,override_process_matched_hashes=custom_process_matched_hashes):
+for row_left,row_right,weight in h.inner_join(c1,c2,override_process_matched_hashes=custom_process_matched_hashes):
 ```
 
 
