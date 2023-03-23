@@ -21,7 +21,7 @@ def csv_input_data(tmp_path_factory):
 
     output1 = os.path.join(tmp_path_factory.getbasetemp(),'test_data_1.csv')
   
-    with open(output1, 'w') as f:
+    with open(output1, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames = file1_headers)
         writer.writeheader()
         writer.writerows(file1_data)
@@ -39,7 +39,7 @@ def csv_input_data(tmp_path_factory):
     ]
 
     output2 = os.path.join(tmp_path_factory.getbasetemp(),'test_data_2.csv')
-    with open(output2, 'w') as f:
+    with open(output2, 'w', newline='') as f:
         writer = csv.DictWriter(f, fieldnames = file2_headers)
         writer.writeheader()
         writer.writerows(file2_data)
@@ -49,7 +49,10 @@ def csv_input_data(tmp_path_factory):
 @pytest.fixture(scope='session')
 def sqlite_input_data(tmp_path_factory):
     db_path = os.path.join(tmp_path_factory.getbasetemp(),'example.db')
-    connection_string = f'Driver=SQLite3;Database={db_path}'
+    # windows:
+    connection_string = 'DRIVER={SQLite3 ODBC Driver};SERVER=localhost;DATABASE='+db_path+';Trusted_connection=yes'
+    # linux:
+    # connection_string = f'Driver=SQLite3;Database={db_path}'
 
     conn = sqlite3.connect(db_path)
     curs = conn.cursor()

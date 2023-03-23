@@ -157,5 +157,6 @@ c,3,c,3,1.0
 d e,1,de,1,1.0
 '''
 
-
+if __name__ == "__main__":
+    pytest.main(["tests/test_hash_join.py", "-s"])
 
