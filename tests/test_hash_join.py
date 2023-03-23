@@ -24,7 +24,7 @@ def test_csv_to_csv(tmp_path_factory,csv_input_data):
 
     output_file = os.path.join(tmp_path_factory.getbasetemp(),'csv_to_csv_output.csv')
 
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', newline='') as f:
         w =csv.writer(f)
         
         # write header column names
@@ -53,7 +53,7 @@ def test_csv_to_odbc(tmp_path_factory,csv_input_data,sqlite_input_data):
 
     output_file = os.path.join(tmp_path_factory.getbasetemp(),'csv_to_odbc_output.csv')
 
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', newline='') as f:
         w =csv.writer(f)
         
         # write header column names
@@ -83,7 +83,7 @@ def test_odbc_to_odbc(tmp_path_factory,sqlite_input_data):
 
     output_file = os.path.join(tmp_path_factory.getbasetemp(),'odbc_to_odbc_output.csv')
 
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', newline='') as f:
         w =csv.writer(f)
         
         # write header column names
@@ -136,7 +136,7 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
 
     output_file = os.path.join(tmp_path_factory.getbasetemp(),'csv_to_odbc_overrides_output.csv')
 
-    with open(output_file, 'w') as f:
+    with open(output_file, 'w', newline='') as f:
         w =csv.writer(f)
         
         # write header column names
