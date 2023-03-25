@@ -36,11 +36,14 @@ def test_csv_to_csv(tmp_path_factory,csv_input_data):
 
     with open(output_file, 'r') as f:
         file_content = f.read()
+        print('file_content:',file_content)
         assert file_content == '''col1,col2,col1,col2
 a,1,a,1
 a,3,a,3
 b,1,b,1
 c,3,c,3
+a1,1,a1,1
+a1,1,a1,1
 '''
 
 def test_csv_to_odbc(tmp_path_factory,csv_input_data,sqlite_input_data):
@@ -71,6 +74,8 @@ a,1,a,1
 a,3,a,3
 b,1,b,1
 c,3,c,3
+a1,1,a1,1
+a1,1,a1,1
 '''
 
 def test_odbc_to_odbc(tmp_path_factory,sqlite_input_data):
@@ -107,6 +112,7 @@ d,1,1,d
 d,2,1,d
 d,1,2,d
 d,2,2,d
+a1,1,1,a1
 '''
 
 def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
@@ -155,6 +161,8 @@ a,3,a,3,1.0
 b,1,b,1,1.0
 c,3,c,3,1.0
 d e,1,de,1,1.0
+a1,1,a1,1,1.0
+a1,1,a1,1,1.0
 '''
 
 if __name__ == "__main__":
