@@ -16,7 +16,8 @@ def csv_input_data(tmp_path_factory):
     {'col1': 'b', 'col2': 4},
     {'col1': 'c', 'col2': 2},
     {'col1': 'c', 'col2': 3},
-    {'col1': 'd e', 'col2': 1}
+    {'col1': 'd e', 'col2': 1},
+    {'col1': 'a1', 'col2': 1}
     ]
 
     output1 = os.path.join(tmp_path_factory.getbasetemp(),'test_data_1.csv')
@@ -35,7 +36,8 @@ def csv_input_data(tmp_path_factory):
     {'col1': 'c', 'col2': 3},
     {'col1': 'd', 'col2': 1},
     {'col1': 'd', 'col2': 2},
-    {'col1': 'de', 'col2': 1}
+    {'col1': 'de', 'col2': 1},
+    {'col1': 'a', 'col2': 11}
     ]
 
     output2 = os.path.join(tmp_path_factory.getbasetemp(),'test_data_2.csv')
