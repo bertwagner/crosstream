@@ -17,7 +17,7 @@ class HashJoin:
         # calculate the hash of join values
         join_values = []
         for col_index in indices:
-            join_values.append(str(hash(row[col_index])))
+            join_values.append(str(hash(str(row[col_index]))))
         join_key = ''.join(join_values)
 
         return join_key

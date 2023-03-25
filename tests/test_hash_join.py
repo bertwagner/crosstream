@@ -121,7 +121,7 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
         join_values = []
         for col_index in indices:
             # here we transform our join key, removing any spaces from our values
-            join_values.append(str(row[col_index]).replace(' ',''))
+            join_values.append(str(hash(str(row[col_index]).replace(' ',''))))
         join_key = ''.join(join_values)
 
         return join_key
@@ -158,5 +158,5 @@ d e,1,de,1,1.0
 '''
 
 if __name__ == "__main__":
-    pytest.main(["tests/test_hash_join.py", "-s"])
+    pytest.main(["tests/test_hash_join.py", "-s", "-k", "test_csv_to_odbc"])
 
