@@ -17,6 +17,7 @@ class HashJoin:
         # calculate the hash of join values
         join_values = []
         for col_index in indices:
+            # convert row[col_index] to string because CSVs can't don't define numeric datatypes - would have to interpret them.
             join_values.append(str(hash(str(row[col_index]))))
         join_key = ''.join(join_values)
 
