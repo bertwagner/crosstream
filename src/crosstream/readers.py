@@ -2,7 +2,7 @@ import csv
 from typing import List, overload
 import pyodbc
 
-class CSVData():
+class CSVReader():
     @overload
     def __init__(self, csv_file_path: str, has_headers: bool, join_columns: List[str], encoding: str):
         ...
@@ -43,7 +43,7 @@ class CSVData():
         else:
             raise ValueError('join_columns must be of type List[int] or List[str]')
     
-    def nextrow(self):
+    def __iter__(self):
         with open(self.csv_file_path, encoding=self.encoding) as f:
             reader = csv.reader(f)
 
@@ -54,7 +54,7 @@ class CSVData():
             for row in reader:
                 yield tuple(row)
     
-class QueryData():
+class ODBCReader():
     @overload
     def __init__(self, connection_string: str, query: str, join_columns: List[str]):
         ...
@@ -92,7 +92,7 @@ class QueryData():
         else:
             raise ValueError('Must be of type List[int] or List[str]')
     
-    def nextrow(self):
+    def __iter__(self):
         connection = pyodbc.connect(self.connection_string)
         with connection:
             cursor = connection.cursor()

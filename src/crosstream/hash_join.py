@@ -3,7 +3,7 @@ import csv
 from typing import overload, Union, Callable, List
 import pyodbc
 
-from crosstream.data_types import CSVData,QueryData
+from crosstream.readers import CSVReader,ODBCReader
 
 class HashJoin:
     def __init__(self):
@@ -26,12 +26,8 @@ class HashJoin:
     def __process_matched_hashes(self,bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
         return tuple(bucket_row),tuple(probe_row,)
 
-    data_type = Union[CSVData,QueryData]
-    def inner_join(self, input_1: data_type, input_2: data_type, override_build_join_key=None, override_process_matched_hashes=None):
-        """Join two datasets.
-
-        The smaller dataset should be passed into input_1.
-        """
+    reader = Union[CSVReader,ODBCReader]
+    def inner_join(self, input_1: reader, input_2: reader, override_build_join_key=None, override_process_matched_hashes=None):
 
         if override_build_join_key != None:
             self.__build_join_key = override_build_join_key
@@ -40,13 +36,12 @@ class HashJoin:
 
         self.hash_buckets = defaultdict(list)
 
-        for row in input_1.nextrow():
+        for row in input_1:
             self.__build_hash_input(row,input_1.join_column_indexes)
 
-        for row in input_2.nextrow():
+        for row in input_2:
             join_key = self.__build_join_key(row,input_2.join_column_indexes)
             for bucket_row in self.hash_buckets[join_key]:
                 record = self.__process_matched_hashes(bucket_row,row, input_1.join_column_indexes, input_2.join_column_indexes)
                 if record != None:
                     yield record
-                
