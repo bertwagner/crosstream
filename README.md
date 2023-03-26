@@ -30,28 +30,24 @@ pip install .
 Ideally you want to make your smaller dataset the first dataset in your join.
 
 ```
-from crosstream.hash_join import HashJoin
-from crosstream.data_types import CSVData,QueryData
+import crosstream as cs
 import csv
 
 file1 = 'small_dataset.csv'
 file2 = 'large_dataset.csv'
 
 # join using column indexes or column names
-c1=CSVData(file1,True,[0,1])
-c2=CSVData(file2, True, ['col1','col2'])
-
-# initialize the type of join to perform. 
-h=HashJoin()
+c1 = cs.read_csv(file1,True,[0,1])
+c2 = cs.read_csv(file2, True, ['col1','col2'])
 
 # specify the output file
 with open('joined_output.csv', 'w') as f:
-    w =csv.writer(f)
+    w = csv.writer(f)
     
     # write header column names
     w.writerow(c1.column_names + c2.column_names)
 
-    for row_left,row_right in h.inner_join(c1,c2):
+    for row_left,row_right in cs.inner_hash_join(c1,c2):
         # write matched results to our joined_output.csv
         w.writerow(row_left + row_right)
 ```
@@ -71,17 +67,17 @@ def custom_join_key(row,indices):
     join_values = []
     for col_index in indices:
         # here we transform our join key, removing any spaces from our values
-        join_values.append(str(row[col_index]).replace(' ',''))
+        join_values.append(str(hash(str(row[col_index]).replace(' ',''))))
     join_key = ''.join(join_values)
 
     return join_key
 ```
 
-And then pass that into the `inner_join()` method:
+And then pass that into the `inner_hash_join()` method:
 
 ```
 ...
-for row_left,row_right in h.inner_join(c1,c2,override_build_join_key=custom_join_key)
+for row_left,row_right in cs.inner_hash_join(c1,c2,override_build_join_key=custom_join_key)
 ...
 ```
 
@@ -97,10 +93,10 @@ def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_index
     return tuple(bucket_row),tuple(probe_row),(weight,)
 ```
 
-And then pass that into the `inner_join()` method:
+And then pass that into the `inner_hash_join()` method:
 
 ```
-for row_left,row_right,weight in h.inner_join(c1,c2,override_process_matched_hashes=custom_process_matched_hashes):
+for row_left,row_right,weight in cs.inner_hash_join(c1,c2,override_process_matched_hashes=custom_process_matched_hashes):
 ```
 
 
