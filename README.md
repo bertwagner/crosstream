@@ -62,6 +62,7 @@ If you want to perform a transformation on your data before comparing for equali
 
 ```
 # define a function for joining on criteria that is modified before insert into hash table
+# row is the data, indices indicates which columns are to be part of the join key
 def custom_join_key(row,indices):
     # calculate the hash of join values
     join_values = []
