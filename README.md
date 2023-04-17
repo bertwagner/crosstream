@@ -66,12 +66,15 @@ If you want to perform a transformation on your data before comparing for equali
 def custom_join_key(row,indices):
     # calculate the hash of join values
     join_values = []
+    join_key_values = []
     for col_index in indices:
         # here we transform our join key, removing any spaces from our values
-        join_values.append(str(hash(str(row[col_index]).replace(' ',''))))
+        col_value = str(row[col_index]).replace(' ','')
+        join_values.append(str(hash(col_value)))
+        join_key_values.append(col_value)
     join_key = ''.join(join_values)
 
-    return join_key
+    return join_key, join_key_values
 ```
 
 And then pass that into the `inner_hash_join()` method:
