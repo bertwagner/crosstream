@@ -122,12 +122,15 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
     def custom_join_key(row,indices):
         # calculate the hash of join values
         join_values = []
+        join_key_values = []
         for col_index in indices:
             # here we transform our join key, removing any spaces from our values
-            join_values.append(str(hash(str(row[col_index]).replace(' ',''))))
+            col_value = str(row[col_index]).replace(' ','')
+            join_values.append(str(hash(col_value)))
+            join_key_values.append(col_value)
         join_key = ''.join(join_values)
 
-        return join_key
+        return join_key, join_key_values
 
     # define a function for performing additional transformations or adding additional outputs before the columns are returned
     def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
@@ -161,5 +164,5 @@ a1,1,a1,1,1.0
 '''
 
 if __name__ == "__main__":
-    pytest.main(["tests/test_hash_join.py", "-s", "-k", "test_csv_to_odbc"])
+    pytest.main(["tests/test_hash_join.py", "-s", "-k", "test_custom_overrides"])
 
