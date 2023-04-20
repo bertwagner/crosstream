@@ -29,10 +29,10 @@ def read_odbc(connection_string, query, join_columns):
     return ODBCReader(connection_string, query, join_columns)
 
 reader = Union[CSVReader,ODBCReader]
-def inner_hash_join(input_1: reader, input_2: reader, override_build_join_key=None, override_process_matched_hashes=None):
+def inner_hash_join(input_1: reader, input_2: reader, override_join_key_transform=None, override_process_matched_hashes=None):
     """Join two datasets using a hash join.
 
         The smaller dataset should be passed into input_1.
         """
     h=HashJoin()
-    return h.inner_join(input_1,input_2,override_build_join_key,override_process_matched_hashes)
+    return h.inner_join(input_1,input_2,override_join_key_transform,override_process_matched_hashes)
