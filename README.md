@@ -61,27 +61,17 @@ By default, this package will join only if all values are equal.
 If you want to perform a transformation on your data before comparing for equality, or use more complicated join equality logic, you can pass in your own function into `override_build_join_key` to define how equality is determined:
 
 ```
-# define a function for joining on criteria that is modified before insert into hash table
-# row is the data, indices indicates which columns are to be part of the join key
-def custom_join_key(row,indices):
-    # calculate the hash of join values
-    join_values = []
-    join_key_values = []
-    for col_index in indices:
-        # here we transform our join key, removing any spaces from our values
-        col_value = str(row[col_index]).replace(' ','')
-        join_values.append(str(hash(col_value)))
-        join_key_values.append(col_value)
-    join_key = ''.join(join_values)
-
-    return join_key, join_key_values
+# define a function for transforming join key data before it's hashed
+def custom_join_key_transform(value):
+    transformed = value.replace(' ','')
+    return transformed
 ```
 
 And then pass that into the `inner_hash_join()` method:
 
 ```
 ...
-for row_left,row_right in cs.inner_hash_join(c1,c2,override_build_join_key=custom_join_key)
+for row_left,row_right in cs.inner_hash_join(c1,c2,override_join_key_transform=custom_join_key_transform)
 ...
 ```
 

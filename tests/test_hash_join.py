@@ -118,19 +118,10 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
     c1=cs.read_csv(csv_input_data[0],True,[0,1])
     c2=cs.read_csv(csv_input_data[1], True, ['col1','col2'])
 
-    # define a function for joining on criteria that is modified before insert into hash table
-    def custom_join_key(row,indices):
-        # calculate the hash of join values
-        join_values = []
-        join_key_values = []
-        for col_index in indices:
-            # here we transform our join key, removing any spaces from our values
-            col_value = str(row[col_index]).replace(' ','')
-            join_values.append(str(hash(col_value)))
-            join_key_values.append(col_value)
-        join_key = ''.join(join_values)
-
-        return join_key, join_key_values
+    # define a function for transforming join key data before it's hashed
+    def custom_join_key_transform(value):
+        transformed = value.replace(' ','')
+        return transformed
 
     # define a function for performing additional transformations or adding additional outputs before the columns are returned
     def custom_process_matched_hashes(bucket_row,probe_row, bucket_join_column_indexes, probe_join_column_indexes):
@@ -146,7 +137,7 @@ def test_custom_overrides(tmp_path_factory,csv_input_data,sqlite_input_data):
         # write header column names
         w.writerow(c1.column_names + c2.column_names + ['weight'])
 
-        for row_left,row_right,weight in cs.inner_hash_join(c1,c2,override_build_join_key=custom_join_key,override_process_matched_hashes=custom_process_matched_hashes):
+        for row_left,row_right,weight in cs.inner_hash_join(c1,c2,override_join_key_transform=custom_join_key_transform,override_process_matched_hashes=custom_process_matched_hashes):
             # write matched results
             w.writerow(row_left + row_right + weight)
 

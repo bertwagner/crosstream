@@ -13,6 +13,9 @@ class HashJoin:
         self.hash_buckets[join_key].append(row)
         self.hash_buckets_key_values[join_key].append(join_key_values)
 
+    def __join_key_transform(self,value):
+        return value
+
     def __build_join_key(self,row,indices):
         # calculate the hash of join values
         join_values = []
@@ -20,8 +23,9 @@ class HashJoin:
         for col_index in indices:
             # convert row[col_index] to string because CSVs can't don't define numeric datatypes - would have to interpret them.
             col_value = str(row[col_index])
-            join_values.append(str(hash(col_value)))
-            join_key_values.append(col_value)
+            transformed_col_value = self.__join_key_transform(col_value)
+            join_values.append(str(hash(transformed_col_value)))
+            join_key_values.append(transformed_col_value)
         join_key = ''.join(join_values)
 
         return join_key, join_key_values
@@ -30,10 +34,10 @@ class HashJoin:
         return tuple(bucket_row),tuple(probe_row,)
 
     reader = Union[CSVReader,ODBCReader]
-    def inner_join(self, input_1: reader, input_2: reader, override_build_join_key=None, override_process_matched_hashes=None):
+    def inner_join(self, input_1: reader, input_2: reader, override_join_key_transform=None, override_process_matched_hashes=None):
 
-        if override_build_join_key != None:
-            self.__build_join_key = override_build_join_key
+        if override_join_key_transform != None:
+            self.__join_key_transform = override_join_key_transform
         if override_process_matched_hashes != None:
             self.__process_matched_hashes = override_process_matched_hashes
 
